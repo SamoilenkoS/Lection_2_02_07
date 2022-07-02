@@ -11,11 +11,18 @@ namespace Lection_2_02_07.Controllers
     [Route("[controller]")]
     public class BooksController : ControllerBase
     {
+        private static List<Book> _books = new List<Book>();
         private readonly ILogger<BooksController> _logger;
 
         public BooksController(ILogger<BooksController> logger)
         {
             _logger = logger;
+        }
+
+        [HttpGet]
+        public IEnumerable<Book> GetAllBooks()
+        {
+            return _books;
         }
     }
 }
