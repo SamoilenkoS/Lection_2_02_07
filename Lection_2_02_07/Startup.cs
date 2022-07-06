@@ -22,7 +22,8 @@ namespace Lection_2_02_07
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IBooksRepository, BooksRepository>();
+            services.AddScoped
+                (typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IBooksService, BooksService>();
             services.AddDbContext<EFCoreDbContext>(options =>
                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));

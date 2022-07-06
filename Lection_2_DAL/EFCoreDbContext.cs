@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Lection_2_DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Lection_2_DAL
 {

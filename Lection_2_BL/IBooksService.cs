@@ -1,15 +1,17 @@
 ﻿using Lection_2_DAL;
+using Lection_2_DAL.Entities;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Lection_2_BL
 {
     public interface IBooksService
     {
-        IEnumerable<Book> GetAllBooks();
-        Book GetBookById(Guid id);
-        bool DeleteBookById(Guid id);
-        bool UpdateBook(Book book);
-        Guid AddBook(Book book);
+        Task<IEnumerable<Book>> GetAllBooks();
+        Task<Book> GetBookById(Guid id);
+        Task<bool> DeleteBookById(Guid id);
+        Task<bool> UpdateBook(Book book);
+        Task<Guid> AddBook(Book book);
     }
 }

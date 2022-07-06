@@ -1,9 +1,11 @@
 ﻿using Lection_2_BL;
 using Lection_2_DAL;
+using Lection_2_DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Lection_2_02_07.Controllers
 {
@@ -21,15 +23,15 @@ namespace Lection_2_02_07.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Book> GetAllBooks()
+        public async Task<IEnumerable<Book>> GetAllBooks()
         {
-            return _booksService.GetAllBooks();
+            return await _booksService.GetAllBooks();
         }
 
         [HttpGet("{id}")]
-        public Book GetBookById(Guid id)
+        public async Task<Book> GetBookById(Guid id)
         {
-            return _booksService.GetBookById(id);
+            return await _booksService.GetBookById(id);
         }
 
         [HttpPost]
@@ -48,17 +50,19 @@ namespace Lection_2_02_07.Controllers
         }
 
         [HttpPut("{id}")]
-        public bool UpdateBook(Guid id, Book book)
+        public async Task<IActionResult> UpdateBook(Guid id, Book book)
         {
             book.Id = id;
 
-            return _booksService.UpdateBook(book);
+            var result = await _booksService.UpdateBook(book);
+
+            return result ? StatusCode(200) : StatusCode(400);
         }
 
         [HttpDelete("{id}")]
-        public bool DeleteBook(Guid id)
+        public async Task<bool> DeleteBook(Guid id)
         {
-            return _booksService.DeleteBookById(id);
+            return await _booksService.DeleteBookById(id);
         }
     }
 }

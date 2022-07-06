@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Lection_2_DAL.Entities;
+using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace Lection_2_DAL
+namespace Lection_2_DAL.Entities
 {
-    public class Book
+    public class Book : BaseEntity
     {
-        public Guid Id { get; set; }
         [Required]
         [MinLength(3)]
         [MaxLength(30)]
