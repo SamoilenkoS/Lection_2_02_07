@@ -1,6 +1,4 @@
-﻿using Lection_2_DAL.Entities;
-using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Lection_2_DAL.Entities
 {
@@ -14,6 +12,5 @@ namespace Lection_2_DAL.Entities
         [MinLength(2)]
         [MaxLength(40)]
         public string Author { get; set; }
-        public int PagesCount { get; set; }
     }
 }
