@@ -26,7 +26,7 @@ namespace Lection_2_02_07
                 (typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IBooksService, BooksService>();
             services.AddDbContext<EFCoreDbContext>(options =>
-               options.UseSqlServer(Configuration["ConnectionStrings:Default"], b => b.MigrationsAssembly("Lection_2_DAL")));
+               options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

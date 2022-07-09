@@ -9,10 +9,10 @@ namespace Lection_2_DAL
         public DbSet<Book> Books { get; set; }
         public DbSet<Library> Libraries { get; set; }
         public DbSet<City> Cities { get; set; }
-        //public DbSet<Client> Clients { get; set; }
-        //public DbSet<BookRevision> BookRevisions { get; set; }
-        //public DbSet<LibraryBooks> LibraryBooks { get; set; }
-        //public DbSet<RentBook> RentBooks { get; set; }
+        public DbSet<Client> Clients { get; set; }
+        public DbSet<BookRevision> BookRevisions { get; set; }
+        public DbSet<LibraryBook> LibraryBooks { get; set; }
+        public DbSet<RentBook> RentBooks { get; set; }
 
         protected EFCoreDbContext()
         {
