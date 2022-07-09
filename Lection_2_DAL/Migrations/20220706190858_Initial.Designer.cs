@@ -7,10 +7,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Lection_2_02_07.Migrations
+namespace Lection_2_DAL.Migrations
 {
     [DbContext(typeof(EFCoreDbContext))]
-    [Migration("20220706184657_Initial")]
+    [Migration("20220706190858_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
