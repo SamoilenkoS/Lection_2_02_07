@@ -2,7 +2,6 @@
 using Lection_2_BL.DTOs;
 using Lection_2_BL.Services.BooksService;
 using Lection_2_DAL.Entities;
-using Lection_2_DAL.Migrations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -25,7 +24,7 @@ namespace Lection_2_02_07.Controllers
             _logger = logger;
         }
 
-        [Authorize(Roles = Lection_2_BL.Roles.Reader)]
+        [Authorize(Roles = Roles.Reader)]
         [HttpGet]
         public async Task<IEnumerable<Book>> GetAllBooks()
         {
