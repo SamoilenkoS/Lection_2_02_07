@@ -5,7 +5,7 @@ namespace Lection_2_BL
 {
     public interface IClientService
     {
-        bool RentABook(Book book, Client client);
-        bool ReturnABook(Book book, Client client);
+        bool RentABook(Book book, User client);
+        bool ReturnABook(Book book, User client);
     }
 }

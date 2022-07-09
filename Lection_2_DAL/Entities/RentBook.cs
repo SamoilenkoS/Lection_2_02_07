@@ -14,8 +14,8 @@ namespace Lection_2_DAL.Entities
         [ForeignKey("LibraryBook")]
         public Guid LibraryBookId { get; set; }
         public LibraryBook LibraryBook { get; set; }
-        public Client Client { get; set; }
+        public User Client { get; set; }
         public DateTime DateGet { get; set; }
-        public DateTime DateReturn { get; set; }
+        public DateTime? DateReturn { get; set; }
     }
 }
