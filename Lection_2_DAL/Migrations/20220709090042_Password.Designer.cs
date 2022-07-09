@@ -4,14 +4,16 @@ using Lection_2_DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lection_2_DAL.Migrations
 {
     [DbContext(typeof(EFCoreDbContext))]
-    partial class EFCoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220709090042_Password")]
+    partial class Password
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -77,6 +79,32 @@ namespace Lection_2_DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cities");
+                });
+
+            modelBuilder.Entity("Lection_2_DAL.Entities.Client", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("BirthDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("Lection_2_DAL.Entities.Library", b =>
@@ -153,7 +181,7 @@ namespace Lection_2_DAL.Migrations
                     b.Property<DateTime>("DateGet")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DateReturn")
+                    b.Property<DateTime>("DateReturn")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid>("LibraryBookId")
@@ -166,51 +194,6 @@ namespace Lection_2_DAL.Migrations
                     b.HasIndex("LibraryBookId");
 
                     b.ToTable("RentBooks");
-                });
-
-            modelBuilder.Entity("Lection_2_DAL.Entities.Role", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Roles");
-                });
-
-            modelBuilder.Entity("Lection_2_DAL.Entities.User", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("BirthDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Password")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("Clients");
                 });
 
             modelBuilder.Entity("Lection_2_DAL.Entities.BookRevision", b =>
@@ -264,7 +247,7 @@ namespace Lection_2_DAL.Migrations
 
             modelBuilder.Entity("Lection_2_DAL.Entities.RentBook", b =>
                 {
-                    b.HasOne("Lection_2_DAL.Entities.User", "Client")
+                    b.HasOne("Lection_2_DAL.Entities.Client", "Client")
                         .WithMany()
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -279,15 +262,6 @@ namespace Lection_2_DAL.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("LibraryBook");
-                });
-
-            modelBuilder.Entity("Lection_2_DAL.Entities.User", b =>
-                {
-                    b.HasOne("Lection_2_DAL.Entities.Role", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId");
-
-                    b.Navigation("Role");
                 });
 #pragma warning restore 612, 618
         }

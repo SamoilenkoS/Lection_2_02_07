@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Lection_2_DAL
@@ -47,6 +48,11 @@ namespace Lection_2_DAL
             return await _dbSet
                 .Where(x => x.Id == id)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<T> GetByPredicate(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).FirstOrDefaultAsync();
         }
 
         public async Task<bool> Update(T item)

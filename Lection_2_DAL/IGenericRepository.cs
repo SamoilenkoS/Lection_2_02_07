@@ -1,6 +1,7 @@
 ﻿using Lection_2_DAL.Entities;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Lection_2_DAL
@@ -13,5 +14,6 @@ namespace Lection_2_DAL
         Task<bool> DeleteById(Guid id);
         Task<bool> Update(T item);
         Task<Guid> Add(T item);
+        Task<T> GetByPredicate(Expression<Func<T, bool>> predicate);
     }
 }

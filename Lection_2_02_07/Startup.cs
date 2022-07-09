@@ -1,4 +1,5 @@
 using Lection_2_BL;
+using Lection_2_BL.Auth;
 using Lection_2_BL.Services.BooksService;
 using Lection_2_DAL;
 using Microsoft.AspNetCore.Builder;
@@ -7,7 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Lection_2_BL.Services.AuthService;
 
 namespace Lection_2_02_07
 {
@@ -23,10 +27,27 @@ namespace Lection_2_02_07
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                    {
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters
+                        {
+                            ValidateIssuer = true,
+                            ValidIssuer = AuthOptions.ISSUER,
+                            ValidateAudience = true,
+                            ValidAudience = AuthOptions.AUDIENCE,
+                            ValidateLifetime = true,
+                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                            ValidateIssuerSigningKey = true,
+                        };
+                    });
+
             services.AddScoped
                 (typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IBooksService, BooksService>();
             services.AddScoped<IBooksRepository, BooksRepository>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddDbContext<EFCoreDbContext>(options =>
                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
 
@@ -51,6 +72,7 @@ namespace Lection_2_02_07
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -6,12 +6,12 @@ namespace Lection_2_BL
 {
     public class ClientService : IClientService
     {
-        public bool RentABook(Book book, Client client)
+        public bool RentABook(Book book, User client)
         {
             throw new NotImplementedException();
         }
 
-        public bool ReturnABook(Book book, Client client)
+        public bool ReturnABook(Book book, User client)
         {
             throw new NotImplementedException();
         }
