@@ -1,4 +1,5 @@
 using Lection_2_BL;
+using Lection_2_BL.Services.BooksService;
 using Lection_2_DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -25,6 +26,7 @@ namespace Lection_2_02_07
             services.AddScoped
                 (typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IBooksService, BooksService>();
+            services.AddScoped<IBooksRepository, BooksRepository>();
             services.AddDbContext<EFCoreDbContext>(options =>
                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
 
