@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
+using Serilog;
 
 namespace Lection_2_02_07
 {
@@ -15,6 +16,9 @@ namespace Lection_2_02_07
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+            .UseSerilog((context, _, configuration) => configuration
+                .ReadFrom.Configuration(context.Configuration))
+;
     }
 }
