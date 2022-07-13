@@ -55,6 +55,11 @@ namespace Lection_2_DAL
             return await _dbSet.Where(predicate).FirstOrDefaultAsync();
         }
 
+        public async Task<IEnumerable<T>> GetAllByPredicate(Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
+
         public async Task<bool> Update(T item)
         {
             _dbContext.Entry(item).State = EntityState.Modified;

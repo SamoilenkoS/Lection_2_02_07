@@ -12,6 +12,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Lection_2_BL.Services.AuthService;
+using Lection_2_BL.Services.LibraryService;
+using Lection_2_BL.Services;
+using Lection_2_BL.Options;
+using System.Text;
+using Lection_2_BL.Services.HashService;
 
 namespace Lection_2_02_07
 {
@@ -27,6 +32,13 @@ namespace Lection_2_02_07
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
+
+            services.Configure<AuthOptions>(options =>
+                Configuration.GetSection(nameof(AuthOptions)).Bind(options));
+
+            var authOptions = Configuration.GetSection(nameof(AuthOptions)).Get<AuthOptions>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -34,11 +46,11 @@ namespace Lection_2_02_07
                         options.TokenValidationParameters = new TokenValidationParameters
                         {
                             ValidateIssuer = true,
-                            ValidIssuer = AuthOptions.ISSUER,
+                            ValidIssuer = authOptions.Issuer,
                             ValidateAudience = true,
-                            ValidAudience = AuthOptions.AUDIENCE,
+                            ValidAudience = authOptions.Audience,
                             ValidateLifetime = true,
-                            IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(authOptions.Key)),
                             ValidateIssuerSigningKey = true,
                         };
                     });
@@ -48,6 +60,9 @@ namespace Lection_2_02_07
             services.AddScoped<IBooksService, BooksService>();
             services.AddScoped<IBooksRepository, BooksRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ILibraryService, LibraryService>();
+            services.AddScoped<ITokenGenerator, TokenGenerator>();
+            services.AddScoped<IHashService, HashService>();
             services.AddDbContext<EFCoreDbContext>(options =>
                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
 
@@ -55,6 +70,13 @@ namespace Lection_2_02_07
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Lection_2_02_07", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
             });
         }
 
