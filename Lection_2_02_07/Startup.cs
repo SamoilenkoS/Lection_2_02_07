@@ -127,6 +127,7 @@ namespace Lection_2_02_07
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

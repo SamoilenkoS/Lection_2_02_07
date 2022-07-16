@@ -27,6 +27,7 @@ namespace Lection_2_02_07.Controllers
         [HttpGet("confirm")]
         public async Task<IActionResult> ConfirmUserMail(string email)
         {
+            throw new ArgumentException();
             return Ok(await _authService.ConfirmUserMail(email));
         }
 
