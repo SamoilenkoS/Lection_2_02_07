@@ -17,6 +17,9 @@ using Lection_2_BL.Services;
 using Lection_2_BL.Options;
 using System.Text;
 using Lection_2_BL.Services.HashService;
+using Lection_2_BL.Services.SMTPService;
+using System.Collections.Generic;
+using Lection_2_BL.Services.EncryptionService;
 
 namespace Lection_2_02_07
 {
@@ -36,6 +39,12 @@ namespace Lection_2_02_07
 
             services.Configure<AuthOptions>(options =>
                 Configuration.GetSection(nameof(AuthOptions)).Bind(options));
+
+            services.Configure<SmtpConfiguration>(options =>
+                Configuration.GetSection(nameof(SmtpConfiguration)).Bind(options));
+
+            services.Configure<EncryptionConfiguration>(options =>
+                Configuration.GetSection(nameof(EncryptionConfiguration)).Bind(options));
 
             var authOptions = Configuration.GetSection(nameof(AuthOptions)).Get<AuthOptions>();
 
@@ -63,13 +72,15 @@ namespace Lection_2_02_07
             services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
             services.AddScoped<IHashService, HashService>();
+            services.AddScoped<ISendingBlueSmtpService, SendingBlueSmtpService>();
+            services.AddScoped<IEncryptionService, EncryptionService>();
             services.AddDbContext<EFCoreDbContext>(options =>
                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Lection_2_02_07", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Lesson1", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     Name = "Authorization",
@@ -77,6 +88,25 @@ namespace Lection_2_02_07
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = "Bearer"
                 });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                  {
+                    {
+                      new OpenApiSecurityScheme
+                      {
+                        Reference = new OpenApiReference
+                          {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                          },
+                          Scheme = "oauth2",
+                          Name = "Bearer",
+                          In = ParameterLocation.Header,
+
+                        },
+                        new List<string>()
+                      }
+                    });
             });
         }
 
