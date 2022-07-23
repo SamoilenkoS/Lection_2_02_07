@@ -1,4 +1,5 @@
 ﻿using Lection_2_DAL.Entities;
+using Lection_2_DAL.Migrations;
 using Microsoft.EntityFrameworkCore;
 
 namespace Lection_2_DAL
@@ -27,6 +28,7 @@ namespace Lection_2_DAL
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Seed();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
