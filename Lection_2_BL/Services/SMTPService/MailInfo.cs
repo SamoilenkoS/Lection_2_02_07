@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace Lection_2_BL.Services.SMTPService
+﻿namespace Lection_2_BL.Services.SMTPService
 {
     public class MailInfo
     {
