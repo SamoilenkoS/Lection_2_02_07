@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Lection_2_BL\Lection_2_BL.csproj" />
+    <ProjectReference Include="..\Lection_2_Core\Lection_2_Core.csproj" />
   </ItemGroup>
 
 </Project>

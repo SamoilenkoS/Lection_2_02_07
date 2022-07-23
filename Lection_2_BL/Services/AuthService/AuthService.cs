@@ -37,8 +37,9 @@ namespace Lection_2_BL.Services.AuthService
 
         public async Task<string> SignIn(string login, string password)
         {
+            var hashed = _hashService.HashString(password);
             var user = await _genericClientRepository.GetByPredicate(
-                x => x.Email == login && x.Password == _hashService.HashString(password));
+                x => x.Email == login && x.Password == hashed);
 
             if (user == null)
             {

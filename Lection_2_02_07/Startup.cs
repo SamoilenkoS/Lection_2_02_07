@@ -48,6 +48,8 @@ namespace Lection_2_02_07
 
             var authOptions = Configuration.GetSection(nameof(AuthOptions)).Get<AuthOptions>();
 
+            services.AddSignalR();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -128,8 +130,10 @@ namespace Lection_2_02_07
             app.UseAuthorization();
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
+            
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapControllers();
             });
         }
