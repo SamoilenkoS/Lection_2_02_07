@@ -4,6 +4,7 @@ namespace Lection_2_Core
 {
     public interface IServerHub
     {
-        Task SendMessage(string user, string message);
+        Task SendMessage(string message);
+        Task<bool> SignIn(string login, string password);
     }
 }

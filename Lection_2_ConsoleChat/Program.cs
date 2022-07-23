@@ -20,17 +20,39 @@ namespace Lection_2_ConsoleChat
             });
 
             await connection.StartAsync();
-            Console.Write("Enter your name:");
-            string username = Console.ReadLine();
             string message;
             do
             {
-                Console.Write("Enter your message:");
                 message = Console.ReadLine();
-                await connection.InvokeAsync(
-                    nameof(IServerHub.SendMessage),
-                    username,
-                    message);
+                if (message.StartsWith('/'))//commands logic
+                {
+                    string command = message.Substring(1, message.IndexOf(' ') - 1).ToLower();
+                    switch (command)
+                    {
+                        case "signin":
+                            var parameters = message
+                                .Substring(
+                                    message.IndexOf(' ') + 1)
+                                .Split(' ');
+                            if(parameters.Length < 2)
+                            {
+                                break;
+                            }
+                            string login = parameters[0];
+                            string password = string.Join(' ', parameters[1..]);
+                            var response = await connection.InvokeAsync<bool>(
+                                nameof(IServerHub.SignIn),
+                                login, password);
+                            break;
+                    }
+                }
+                else
+                {
+                    await connection.InvokeAsync(
+                        nameof(IServerHub.SendMessage),
+                        message);
+                }
+
             } while (!string.IsNullOrEmpty(message));
 
         }

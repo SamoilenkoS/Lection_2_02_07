@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Lection_2_DAL.Entities
+﻿namespace Lection_2_DAL.Entities
 {
     public class Point : BaseEntity
     {
