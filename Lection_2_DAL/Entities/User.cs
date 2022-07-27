@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Lection_2_DAL.Entities
 {
+    [Index(nameof(Email), IsUnique = true)]
     public class User : BaseEntity
     {
         public string FirstName { get; set; }
