@@ -6,5 +6,6 @@ namespace Lection_2_Core
     {
         Task SendMessage(string message);
         Task<bool> SignIn(string login, string password);
+        Task UserStartTyping();
     }
 }

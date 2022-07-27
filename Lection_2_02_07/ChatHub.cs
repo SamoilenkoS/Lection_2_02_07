@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Lection_2_02_07
@@ -19,6 +20,7 @@ namespace Lection_2_02_07
         private readonly ITokenGenerator _tokenGenerator;
         private Func<Room, bool> ByReader = x => string.IsNullOrEmpty(x.ReaderConnectionId);
         private Func<Room, bool> ByLibrarian = x => string.IsNullOrEmpty(x.LibrarianConnectionId);
+        private int _delayInSeconds = 5;
 
         static ChatHub()
         {
@@ -108,6 +110,55 @@ namespace Lection_2_02_07
             catch (ArgumentException)
             {
                 return false;
+            }
+        }
+
+        public async Task UserStartTyping()
+        {
+            var room = _chatRooms.FirstOrDefault(x =>
+                  x.LibrarianConnectionId == Context.ConnectionId
+                  || x.ReaderConnectionId == Context.ConnectionId);
+            if(room != null)
+            {
+                var role = room.ReaderConnectionId == Context.ConnectionId
+                  ? Roles.Reader
+                  : Roles.Librarian;
+                var targetId = room.ReaderConnectionId == Context.ConnectionId
+                    ? room.LibrarianConnectionId
+                    : room.ReaderConnectionId;
+                await Clients.Client(targetId).RoomateTyping(true);
+                var tokenSource = room.ReaderConnectionId == Context.ConnectionId
+                    ? room.LibrarianCancellationTokenSource
+                    : room.ReaderCancellationTokenSource;
+                if(tokenSource != null)
+                {
+                    tokenSource.Cancel();
+                    await UserStopTyping(targetId, tokenSource.Token).ConfigureAwait(false);
+                }
+                else
+                {
+                    if(room.ReaderConnectionId == Context.ConnectionId)//reader
+                    {
+                        room.ReaderCancellationTokenSource = new CancellationTokenSource();
+                        await UserStopTyping(targetId,
+                            room.ReaderCancellationTokenSource.Token);
+                    }
+                    else
+                    {
+                        room.LibrarianCancellationTokenSource = new CancellationTokenSource();
+                        await UserStopTyping(targetId,
+                            room.LibrarianCancellationTokenSource.Token);
+                    }
+                }
+            }
+        }
+
+        private async Task UserStopTyping(string clientId, CancellationToken cancellationToken)
+        {
+            await Task.Delay(TimeSpan.FromSeconds(_delayInSeconds));
+            if (!cancellationToken.IsCancellationRequested)
+            {
+                await Clients.Client(clientId).RoomateTyping(false);
             }
         }
     }
