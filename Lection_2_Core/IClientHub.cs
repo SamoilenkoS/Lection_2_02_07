@@ -5,5 +5,6 @@ namespace Lection_2_Core
     public interface IClientHub
     {
         Task ReceiveMessage(string user, string message);
+        Task RoomateTyping(bool isTyping);
     }
 }
