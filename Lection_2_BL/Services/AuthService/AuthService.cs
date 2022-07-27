@@ -53,9 +53,9 @@ namespace Lection_2_BL.Services.AuthService
 
         public async Task<Guid> SignUp(UserDto user)
         {
-            user.Password = _hashService.HashString(user.Password);
+            var hashed = _hashService.HashString(user.Password);
 
-            var response = await _genericClientRepository.Add(Map(user));
+            var response = await _genericClientRepository.Add(Map(user, hashed));
 
             await _sendingBlueSmtpService.SendMail(
                 new MailInfo
@@ -92,13 +92,13 @@ namespace Lection_2_BL.Services.AuthService
             return user != null;
         }
 
-        private User Map(UserDto userDto)
+        private User Map(UserDto userDto, string hashed)
         {
             return new User
             {
                 FirstName = userDto.FirstName,
                 LastName = userDto.LastName,
-                Password = userDto.Password,
+                Password = hashed,
                 Email = userDto.Email,
                 BirthDate = userDto.BirthDate
             };
