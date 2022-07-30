@@ -20,6 +20,10 @@ using Lection_2_BL.Services.HashService;
 using Lection_2_BL.Services.SMTPService;
 using System.Collections.Generic;
 using Lection_2_BL.Services.EncryptionService;
+using Hangfire;
+using Hangfire.SqlServer;
+using System;
+using Lection_2_BL.Jobs;
 
 namespace Lection_2_02_07
 {
@@ -77,6 +81,7 @@ namespace Lection_2_02_07
             services.AddScoped<IHashService, HashService>();
             services.AddScoped<ISendingBlueSmtpService, SendingBlueSmtpService>();
             services.AddScoped<IEncryptionService, EncryptionService>();
+            services.AddScoped<CountMonitorJob>();
             services.AddDbContext<EFCoreDbContext>(options =>
                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
 
@@ -111,7 +116,22 @@ namespace Lection_2_02_07
                       }
                     });
             });
-            services.AddHostedService<TimedHostedService>();
+            //services.AddHostedService<TimedHostedService>();
+            services.AddHangfire(configuration => configuration
+               .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+               .UseSimpleAssemblyNameTypeSerializer()
+               .UseRecommendedSerializerSettings()
+               .UseSqlServerStorage(Configuration.GetConnectionString("Default"),
+               new SqlServerStorageOptions
+               {
+                   CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                   SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                   QueuePollInterval = TimeSpan.Zero,
+                   UseRecommendedIsolationLevel = true,
+                   DisableGlobalLocks = true
+               }));
+
+            services.AddHangfireServer();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -125,6 +145,7 @@ namespace Lection_2_02_07
             }
 
             app.UseHttpsRedirection();
+            app.UseHangfireDashboard();
 
             app.UseRouting();
 
@@ -132,11 +153,11 @@ namespace Lection_2_02_07
             app.UseAuthorization();
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
-            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<ChatHub>("/chat");
                 endpoints.MapControllers();
+                endpoints.MapHangfireDashboard();
             });
         }
     }
