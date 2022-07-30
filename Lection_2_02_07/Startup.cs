@@ -37,6 +37,7 @@ namespace Lection_2_02_07
         {
             services.AddHttpContextAccessor();
 
+
             services.Configure<AuthOptions>(options =>
                 Configuration.GetSection(nameof(AuthOptions)).Bind(options));
 
@@ -110,6 +111,7 @@ namespace Lection_2_02_07
                       }
                     });
             });
+            services.AddHostedService<TimedHostedService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
