@@ -41,6 +41,14 @@ namespace Lection_2_02_07
         {
             services.AddHttpContextAccessor();
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    policy =>
+                    {
+                        policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin();
+                    });
+            });
 
             services.Configure<AuthOptions>(options =>
                 Configuration.GetSection(nameof(AuthOptions)).Bind(options));
@@ -148,6 +156,7 @@ namespace Lection_2_02_07
             app.UseHangfireDashboard();
 
             app.UseRouting();
+            app.UseCors();
 
             app.UseAuthentication();
             app.UseAuthorization();
