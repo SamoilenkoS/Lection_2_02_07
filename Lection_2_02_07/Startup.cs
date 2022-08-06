@@ -24,6 +24,8 @@ using Hangfire;
 using Hangfire.SqlServer;
 using System;
 using Lection_2_BL.Jobs;
+using Lection_2_DAL.CachingSystem;
+using StackExchange.Redis;
 
 namespace Lection_2_02_07
 {
@@ -61,6 +63,16 @@ namespace Lection_2_02_07
 
             var authOptions = Configuration.GetSection(nameof(AuthOptions)).Get<AuthOptions>();
 
+            services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
+                  ConnectionMultiplexer.Connect(new ConfigurationOptions
+                  {
+                      EndPoints =
+                      {
+                          $"127.0.0.1:5002"
+                      },
+                      AbortOnConnectFail = false,
+                  }));
+
             services.AddSignalR();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -84,6 +96,7 @@ namespace Lection_2_02_07
             services.AddScoped<IBooksService, BooksService>();
             services.AddScoped<IBooksRepository, BooksRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICacheRepository, RedisCachingRepository>();
             services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
             services.AddScoped<IHashService, HashService>();
