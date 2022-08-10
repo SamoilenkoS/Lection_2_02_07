@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Azure.Identity;
+using Microsoft.Extensions.Configuration;
+using System;
 
 namespace Lection_2_02_07
 {
@@ -12,7 +15,15 @@ namespace Lection_2_02_07
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
+            Host
+                .CreateDefaultBuilder(args)
+                .ConfigureAppConfiguration((context, config) =>
+                {
+                    var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
+                    config.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
+                    //var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
+                    //config.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
+                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

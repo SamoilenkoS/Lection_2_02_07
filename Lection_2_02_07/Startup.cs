@@ -96,11 +96,11 @@ namespace Lection_2_02_07
             services.AddScoped<IBooksService, BooksService>();
             services.AddScoped<IBooksRepository, BooksRepository>();
             services.AddScoped<IAuthService, AuthService>();
-            services.AddScoped<ICacheRepository, RedisCachingRepository>();
+            services.AddScoped<ICacheRepository, CacheMock>();
             services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
             services.AddScoped<IHashService, HashService>();
-            services.AddScoped<ISendingBlueSmtpService, SendingBlueSmtpService>();
+            services.AddScoped<ISendingBlueSmtpService, MockSMTPService>();
             services.AddScoped<IEncryptionService, EncryptionService>();
             services.AddScoped<CountMonitorJob>();
             services.AddDbContext<EFCoreDbContext>(options =>

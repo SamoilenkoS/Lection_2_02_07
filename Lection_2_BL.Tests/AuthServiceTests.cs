@@ -6,6 +6,7 @@ using Lection_2_BL.Services.EncryptionService;
 using Lection_2_BL.Services.HashService;
 using Lection_2_BL.Services.SMTPService;
 using Lection_2_DAL;
+using Lection_2_DAL.CachingSystem;
 using Lection_2_DAL.Entities;
 using Moq;
 using NUnit.Framework;
@@ -21,6 +22,7 @@ namespace Lection_2_BL.Tests
         private Mock<IGenericRepository<User>> _genericUserRepositoryMock;
         private Mock<IGenericRepository<Role>> _genericRoleRepositoryMock;
         private Mock<ITokenGenerator> _tokenGeneratorMock;
+        private Mock<ICacheRepository> _cacheRepositoryMock;
         private Mock<IHashService> _hashService;
         private AuthService _authService;
         private Fixture _fixture;
@@ -33,12 +35,14 @@ namespace Lection_2_BL.Tests
             _genericUserRepositoryMock = new Mock<IGenericRepository<User>>();
             _genericRoleRepositoryMock = new Mock<IGenericRepository<Role>>();
             _tokenGeneratorMock = new Mock<ITokenGenerator>();
+            _cacheRepositoryMock = new Mock<ICacheRepository>();
             _hashService = new Mock<IHashService>();
             _authService = new AuthService(
                 _encryptionServiceMock.Object,
                 _sendingBlueSmtpServiceMock.Object,
                 _genericUserRepositoryMock.Object,
                 _genericRoleRepositoryMock.Object,
+                _cacheRepositoryMock.Object,
                 _tokenGeneratorMock.Object,
                 _hashService.Object);
 
