@@ -17,19 +17,11 @@ namespace Lection_2_02_07
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host
                 .CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration((context, config) =>
-                {
-                    var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
-                    config.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
-                    //var keyVaultEndpoint = new Uri(Environment.GetEnvironmentVariable("VaultUri"));
-                    //config.AddAzureKeyVault(keyVaultEndpoint, new DefaultAzureCredential());
-                })
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
                 })
             .UseSerilog((context, _, configuration) => configuration
-                .ReadFrom.Configuration(context.Configuration))
-;
+                .ReadFrom.Configuration(context.Configuration));
     }
 }

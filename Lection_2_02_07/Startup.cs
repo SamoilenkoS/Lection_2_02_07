@@ -41,6 +41,9 @@ namespace Lection_2_02_07
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<EFCoreDbContext>(options =>
+                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
+
             services.AddHttpContextAccessor();
 
             services.AddCors(options =>
@@ -103,8 +106,7 @@ namespace Lection_2_02_07
             services.AddScoped<ISendingBlueSmtpService, MockSMTPService>();
             services.AddScoped<IEncryptionService, EncryptionService>();
             services.AddScoped<CountMonitorJob>();
-            services.AddDbContext<EFCoreDbContext>(options =>
-               options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
