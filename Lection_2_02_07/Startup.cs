@@ -24,6 +24,8 @@ using Hangfire;
 using Hangfire.SqlServer;
 using System;
 using Lection_2_BL.Jobs;
+using Lection_2_DAL.CachingSystem;
+using StackExchange.Redis;
 
 namespace Lection_2_02_07
 {
@@ -39,6 +41,9 @@ namespace Lection_2_02_07
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<EFCoreDbContext>(options =>
+                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
+
             services.AddHttpContextAccessor();
 
             services.AddCors(options =>
@@ -60,6 +65,16 @@ namespace Lection_2_02_07
                 Configuration.GetSection(nameof(EncryptionConfiguration)).Bind(options));
 
             var authOptions = Configuration.GetSection(nameof(AuthOptions)).Get<AuthOptions>();
+
+            services.AddSingleton<IConnectionMultiplexer>(serviceProvider =>
+                  ConnectionMultiplexer.Connect(new ConfigurationOptions
+                  {
+                      EndPoints =
+                      {
+                          $"127.0.0.1:5002"
+                      },
+                      AbortOnConnectFail = false,
+                  }));
 
             services.AddSignalR();
 
@@ -84,14 +99,14 @@ namespace Lection_2_02_07
             services.AddScoped<IBooksService, BooksService>();
             services.AddScoped<IBooksRepository, BooksRepository>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ICacheRepository, CacheMock>();
             services.AddScoped<ILibraryService, LibraryService>();
             services.AddScoped<ITokenGenerator, TokenGenerator>();
             services.AddScoped<IHashService, HashService>();
-            services.AddScoped<ISendingBlueSmtpService, SendingBlueSmtpService>();
+            services.AddScoped<ISendingBlueSmtpService, MockSMTPService>();
             services.AddScoped<IEncryptionService, EncryptionService>();
             services.AddScoped<CountMonitorJob>();
-            services.AddDbContext<EFCoreDbContext>(options =>
-               options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
+
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

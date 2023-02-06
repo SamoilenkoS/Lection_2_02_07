@@ -4,6 +4,7 @@ using Lection_2_BL.Services.EncryptionService;
 using Lection_2_BL.Services.HashService;
 using Lection_2_BL.Services.SMTPService;
 using Lection_2_DAL;
+using Lection_2_DAL.CachingSystem;
 using Lection_2_DAL.Entities;
 using System;
 using System.Threading.Tasks;
@@ -18,12 +19,14 @@ namespace Lection_2_BL.Services.AuthService
         private readonly IGenericRepository<Role> _genericRoleRepository;
         private readonly ITokenGenerator _tokenGenerator;
         private readonly IHashService _hashService;
+        private readonly ICacheRepository _cacheRepository;
 
         public AuthService(
             IEncryptionService encryptionService,
             ISendingBlueSmtpService sendingBlueSmtpService,
             IGenericRepository<User> genericClientRepository,
             IGenericRepository<Role> genericRoleRepository,
+            ICacheRepository cacheRepository,
             ITokenGenerator tokenGenerator,
             IHashService hashService)
         {
@@ -31,6 +34,7 @@ namespace Lection_2_BL.Services.AuthService
             _sendingBlueSmtpService = sendingBlueSmtpService;
             _genericClientRepository = genericClientRepository;
             _genericRoleRepository = genericRoleRepository;
+            _cacheRepository = cacheRepository;
             _tokenGenerator = tokenGenerator;
             _hashService = hashService;
         }
@@ -46,9 +50,21 @@ namespace Lection_2_BL.Services.AuthService
                 throw new ArgumentException();
             }
 
-            var role = user.RoleId.HasValue ? (await _genericRoleRepository.GetById(user.RoleId.Value)).Name : Roles.Reader;
+            var role = user.RoleId.HasValue ? (await GetRole(user.RoleId.Value)) : Roles.Reader;
 
             return _tokenGenerator.GenerateToken(user.Email, role);
+        }
+
+        private async Task<string> GetRole(Guid roleId)
+        {
+            var cachedRole = await _cacheRepository.GetAsync(roleId.ToString());
+            if (string.IsNullOrEmpty(cachedRole))
+            {
+                cachedRole = (await _genericRoleRepository.GetById(roleId)).Name;
+                await _cacheRepository.SaveAsync(roleId.ToString(), cachedRole);
+            }
+
+            return cachedRole;
         }
 
         public async Task<Guid> SignUp(UserDto user)

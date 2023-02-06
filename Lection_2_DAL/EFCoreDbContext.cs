@@ -16,14 +16,11 @@ namespace Lection_2_DAL
         public DbSet<RentBook> RentBooks { get; set; }
         public DbSet<Role> Roles { get; set; }
 
-        protected EFCoreDbContext()
-        {
-        }
+        public EFCoreDbContext() { }
 
         public EFCoreDbContext(DbContextOptions<EFCoreDbContext> options)
-            : base(options)
+          : base(options)
         {
-            Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
